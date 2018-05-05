@@ -1,0 +1,12 @@
+{
+    "name": "tobias74/php-resumable-upload",
+    "description": "php-serverside for processing chunked uploads sent form resumable.js",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "PhpResumableUpload\\": "src/"
+        }
+    },
+    "require": {}
+}

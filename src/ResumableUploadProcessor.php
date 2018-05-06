@@ -3,9 +3,9 @@ namespace PhpResumableUpload;
 
 class ResumableUploadProcessor
 {
-  protected _isComplete=false;
+  protected $_isComplete=false;
   
-  public function __construct($config)
+  public function __construct($config = [])
   {
     $this->config = array_merge(array(
         'parameterNameResumableIdentifier' => 'resumableIdentifier',
@@ -24,7 +24,7 @@ class ResumableUploadProcessor
     return intval($_REQUEST[ $this->config['parameterNameResumableTotalChunks'] ]);
   }
 
-  protected getChunkNumber()
+  protected function getChunkNumber()
   {
     return intval($_REQUEST[ $this->config['parameterNameResumableChunkNumber'] ]);
   }
@@ -36,7 +36,7 @@ class ResumableUploadProcessor
 
   protected function getIdentifier()
   {
-    return $_REQUEST[ $this->config['parameterNameResumableIdentifier'] ]      
+    return $_REQUEST[ $this->config['parameterNameResumableIdentifier'] ];   
   }
 
   public function getOriginalFileName()
@@ -47,11 +47,11 @@ class ResumableUploadProcessor
 
   protected function getFolderForChunkedUpload()
   {
-    return sys_get_temp_dir().'/user-'.$this->getLoggedInUserId().'/'.md5($this->getIdentifier());
+    return sys_get_temp_dir().'/'.md5($this->getIdentifier());
   }
 
 
-  protected function getTargetFileName()
+  public function getTargetFileName()
   {
     return $this->getFolderForChunkedUpload().'/'.md5( $this->getOriginalFileName() );
   }
@@ -63,7 +63,7 @@ class ResumableUploadProcessor
 
   protected function getFileNameForChunkOfCurrentRequest()
   {
-    return $this->getBaseFileNameForChunks().$this->getChunkNumber());
+    return $this->getBaseFileNameForChunks().$this->getChunkNumber();
   }
 
   protected function getFileNameForChunkWithNumber($chunkNumber)
@@ -143,7 +143,7 @@ class ResumableUploadProcessor
     } 
     else 
     {
-      return false
+      return false;
     }
       
   }

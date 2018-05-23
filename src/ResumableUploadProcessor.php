@@ -8,6 +8,7 @@ class ResumableUploadProcessor
   public function __construct($config = [])
   {
     $this->config = array_merge(array(
+        'processorId' => 'default',
         'parameterNameResumableIdentifier' => 'resumableIdentifier',
         'parameterNameResumableFilename' => 'resumableFilename',
         'parameterNameResumableChunkNumber' => 'resumableChunkNumber',
@@ -44,10 +45,15 @@ class ResumableUploadProcessor
     return $_REQUEST[ $this->config['parameterNameResumableFilename'] ];  
   }
 
+  
+  protected function getProcessorId()
+  {
+    return $this->config['processorId'];
+  }
 
   protected function getFolderForChunkedUpload()
   {
-    return sys_get_temp_dir().'/'.md5($this->getIdentifier());
+    return sys_get_temp_dir().'/'.$this->getProcessorId()."---".md5($this->getIdentifier());
   }
 
 
@@ -114,13 +120,14 @@ class ResumableUploadProcessor
       {
         if ($object != "." && $object != "..") 
         {
-          if (filetype($dir . "/" . $object) == "dir") 
+          $pathFile = $dir . "/" . $object;
+          if (is_dir($pathFile)) 
           {
-            $this->removeFolderRecursively($dir . "/" . $object); 
+            $this->removeFolderRecursively($pathFile); 
           } 
           else 
           {
-            unlink($dir . "/" . $object);
+            unlink($pathFile);
           }
         }
       }
@@ -151,7 +158,13 @@ class ResumableUploadProcessor
   public function processNextChunk()
   {
     $file = $_FILES[ $this->config['parameterNameFile'] ]; 
-
+    
+    if ($file['error'] === 1)
+    {
+      throw new \ErrorException('Error Uploading Chunk!');  
+    }
+    
+    
     $temp_dir = $this->getFolderForChunkedUpload();
     if (!is_dir($temp_dir)) 
     {

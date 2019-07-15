@@ -197,5 +197,15 @@ class ResumableUploadProcessor
   {
     $this->removeFolderRecursively( $this->getFolderForChunkedUpload() );
   }
+  
+  public function processAllChunks($finishedCallback)
+  {
+    $this->processNextChunk();
+    if ($this->isComplete())
+    {
+      $finishedCallback($this->getTargetFileName());
+    }
+    $this->cleanUpAfterUpload();
+  }
     
 }

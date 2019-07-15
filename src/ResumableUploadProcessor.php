@@ -203,7 +203,7 @@ class ResumableUploadProcessor
     $this->processNextChunk();
     if ($this->isComplete())
     {
-      $finishedCallback($this->getTargetFileName());
+      $finishedCallback($this->getTargetFileName(), $this->getOriginalFileName());
     }
     $this->cleanUpAfterUpload();
   }
